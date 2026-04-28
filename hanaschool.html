@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HanaSchool — Learn Japanese Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #BC002D;
+  --red-dark: #8B0000;
+  --red-light: #FF1744;
+  --gold: #E8B84B;
+  --gold-light: #FFD700;
+  --cream: #FDF8F0;
+  --cream-dark: #F5EDD8;
+  --dark: #1A1A1A;
+  --dark2: #2A2A2A;
+  --gray: #6B6B6B;
+  --light: #FFF5F5;
+  --white: #FFFFFF;
+  --border: rgba(188,0,45,0.1);
+  --shadow: 0 20px 60px rgba(0,0,0,0.08);
+  --shadow-red: 0 12px 40px rgba(188,0,45,0.25);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  width: 12px; height: 12px;
+  background: var(--red);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(188,0,45,0.4);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transition: transform 0.35s ease, width 0.2s, height 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+body:has(a:hover) .cursor,
+body:has(button:hover) .cursor { width: 20px; height: 20px; background: var(--gold); }
+body:has(a:hover) .cursor-ring,
+body:has(button:hover) .cursor-ring { width: 52px; height: 52px; }
+
+/* LOADER */
+.loader {
+  position: fixed; inset: 0;
+  background: var(--dark);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loader.hide { opacity: 0; visibility: hidden; }
+
+.loader-content { text-align: center; }
+
+.loader-jp {
+  font-size: 80px;
+  color: rgba(255,255,255,0.08);
+  position: absolute;
+  font-family: serif;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.loader-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 900;
+  color: #fff; position: relative; z-index: 1;
+}
+
+.loader-logo span { color: var(--gold); }
+
+.loader-bar {
+  width: 200px; height: 2px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  margin: 16px auto 0;
+  overflow: hidden;
+}
+
+.loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 2px;
+  animation: load 1.8s ease forwards;
+}
+
+@keyframes load { from { width: 0; } to { width: 100%; } }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 48px;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: all 0.4s ease;
+}
+
+nav.scrolled {
+  background: rgba(253,248,240,0.97);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(188,0,45,0.08), 0 8px 32px rgba(0,0,0,0.06);
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 900;
+  color: var(--red);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  transition: transform 0.2s;
+}
+
+.logo:hover { transform: scale(1.03); }
+.logo span { color: var(--gold); }
+
+.nav-links {
+  list-style: none;
+  display: flex; align-items: center; gap: 36px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--dark);
+  font-size: 14px; font-weight: 400;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1.5px; background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--red); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  background: var(--red) !important;
+  color: #fff !important;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 500 !important;
+  transition: all 0.3s !important;
+  box-shadow: 0 4px 16px rgba(188,0,45,0.3);
+}
+
+.nav-cta::after { display: none !important; }
+.nav-cta:hover { background: var(--red-dark) !important; transform: translateY(-2px) !important; box-shadow: var(--shadow-red) !important; }
+
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 8px;
+}
+
+.hamburger span {
+  width: 24px; height: 2px;
+  background: var(--dark);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* MOBILE MENU */
+.mobile-menu {
+  position: fixed; inset: 0;
+  background: var(--dark);
+  z-index: 99;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px;
+  opacity: 0; visibility: hidden;
+  transition: all 0.4s ease;
+}
+
+.mobile-menu.open { opacity: 1; visibility: visible; }
+
+.mobile-menu a {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 700;
+  color: #fff; text-decoration: none;
+  transition: color 0.2s;
+}
+
+.mobile-menu a:hover { color: var(--gold); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 100px 48px 80px;
+  position: relative;
+  overflow: hidden;
+  gap: 48px;
+}
+
+.hero-left { position: relative; z-index: 2; }
+
+/* FLOATING PARTICLES */
+.particles {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  font-family: serif;
+  color: rgba(188,0,45,0.06);
+  animation: floatParticle linear infinite;
+  user-select: none;
+}
+
+@keyframes floatParticle {
+  from { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--gold), #F5C842);
+  color: var(--red-dark);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+  animation: fadeSlideUp 0.6s ease both;
+  box-shadow: 0 4px 16px rgba(232,184,75,0.3);
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  animation: fadeSlideUp 0.7s ease 0.1s both;
+}
+
+.hero h1 em { font-style: normal; color: var(--red); }
+
+.hero p {
+  font-size: 17px;
+  color: var(--gray);
+  line-height: 1.75;
+  margin-bottom: 40px;
+  font-weight: 300;
+  max-width: 440px;
+  animation: fadeSlideUp 0.7s ease 0.2s both;
+}
+
+.hero-btns {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  animation: fadeSlideUp 0.7s ease 0.3s both;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 32px;
+  font-size: 15px; font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 6px 20px rgba(188,0,45,0.3);
+  position: relative; overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 32px rgba(188,0,45,0.4); }
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary:active { transform: translateY(-1px) scale(0.99); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--dark);
+  padding: 16px 32px;
+  border-radius: 32px;
+  font-size: 15px; font-weight: 500;
+  text-decoration: none;
+  border: 1.5px solid rgba(26,26,26,0.15);
+  transition: all 0.3s ease;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+
+.btn-secondary:hover { border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+
+.hero-stats {
+  display: flex; gap: 40px;
+  margin-top: 52px; padding-top: 40px;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  animation: fadeSlideUp 0.7s ease 0.4s both;
+}
+
+.stat { text-align: center; }
+
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px; font-weight: 900;
+  color: var(--red);
+  display: block;
+  line-height: 1;
+}
+
+.stat-label { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* HERO RIGHT */
+.hero-right {
+  position: relative; z-index: 2;
+  animation: fadeSlideUp 0.8s ease 0.2s both;
+}
+
+.hero-visual {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  border-radius: 32px;
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-red);
+}
+
+.hero-visual::before {
+  content: '日本語';
+  position: absolute; right: -20px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 140px;
+  color: rgba(255,255,255,0.06);
+  font-family: serif;
+  line-height: 1;
+}
+
+.visual-tag {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 11px; letter-spacing: 1.5px;
+  padding: 6px 14px; border-radius: 20px;
+  display: inline-block; margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.visual-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 900;
+  color: #fff; margin-bottom: 8px;
+}
+
+.visual-sub { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 32px; }
+
+.mini-cards { display: flex; flex-direction: column; gap: 12px; }
+
+.mini-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  transition: all 0.3s;
+  cursor: default;
+  animation: slideInRight 0.5s ease both;
+}
+
+.mini-card:nth-child(1) { animation-delay: 0.5s; }
+.mini-card:nth-child(2) { animation-delay: 0.7s; }
+.mini-card:nth-child(3) { animation-delay: 0.9s; }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.mini-card:hover { background: rgba(255,255,255,0.18); transform: translateX(-4px); }
+
+.mini-icon {
+  width: 44px; height: 44px;
+  background: rgba(232,184,75,0.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+.mini-text strong { display: block; color: #fff; font-size: 14px; }
+.mini-text span { color: rgba(255,255,255,0.6); font-size: 12px; }
+
+.visual-cta {
+  margin-top: 28px;
+  background: var(--gold);
+  color: var(--red-dark);
+  padding: 14px 24px;
+  border-radius: 16px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.3s;
+}
+
+.visual-cta:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,184,75,0.4); }
+
+/* TICKER */
+.ticker {
+  background: var(--red);
+  padding: 14px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-inner {
+  display: flex; gap: 0;
+  animation: ticker 25s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 12px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13px; font-weight: 400;
+  padding: 0 32px;
+}
+
+.ticker-dot { color: var(--gold); font-size: 18px; }
+
+/* SECTIONS */
+section { padding: 100px 48px; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--light);
+  color: var(--red);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 2px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  border: 1px solid rgba(188,0,45,0.12);
+}
+
+.section-h {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 900;
+  line-height: 1.12;
+  margin-bottom: 18px;
+}
+
+.section-h em { font-style: normal; color: var(--red); }
+
+.section-p {
+  font-size: 16px; color: var(--gray);
+  line-height: 1.75; font-weight: 300;
+  max-width: 500px;
+}
+
+/* WHY */
+.why { background: var(--white); }
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.why-card {
+  background: var(--cream);
+  border-radius: 24px;
+  padding: 36px 32px;
+  border: 1px solid transparent;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative; overflow: hidden;
+}
+
+.why-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  opacity: 0;
+  transition: opacity 0.4s;
+  border-radius: 24px;
+}
+
+.why-card:hover { transform: translateY(-8px) scale(1.01); border-color: var(--border); box-shadow: var(--shadow-red); }
+.why-card:hover::before { opacity: 1; }
+.why-card:hover .why-icon { background: rgba(255,255,255,0.15); }
+.why-card:hover h3,
+.why-card:hover p { color: #fff; }
+.why-card:hover .why-num { color: rgba(255,255,255,0.1); }
+
+.why-num {
+  position: absolute; top: 20px; right: 24px;
+  font-family: 'Playfair Display', serif;
+  font-size: 64px; font-weight: 900;
+  color: rgba(188,0,45,0.06);
+  line-height: 1;
+  transition: color 0.4s;
+}
+
+.why-icon {
+  width: 56px; height: 56px;
+  background: var(--red);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+  transition: background 0.4s;
+}
+
+.why-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700;
+  margin-bottom: 12px;
+  position: relative; z-index: 1;
+  transition: color 0.4s;
+}
+
+.why-card p {
+  font-size: 14px; color: var(--gray);
+  line-height: 1.7;
+  position: relative; z-index: 1;
+  transition: color 0.4s;
+}
+
+/* COURSES */
+.courses { background: var(--cream); }
+
+.courses-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 60px;
+}
+
+/* COURSE TABS */
+.course-tabs {
+  display: flex; gap: 4px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 12px; padding: 4px;
+}
+
+.tab-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  font-size: 13px; font-weight: 500;
+  color: var(--gray);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tab-btn.active {
+  background: var(--white);
+  color: var(--red);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.course-panel { display: none; }
+.course-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+.course-card {
+  background: var(--white);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.4s ease;
+}
+
+.course-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); }
+
+.course-head {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  padding: 36px 32px;
+  position: relative; overflow: hidden;
+}
+
+.course-head::after {
+  content: attr(data-jp);
+  position: absolute; right: 16px; bottom: -10px;
+  font-size: 80px; font-family: serif;
+  color: rgba(255,255,255,0.08);
+}
+
+.course-badge {
+  background: var(--gold);
+  color: var(--red-dark);
+  font-size: 10px; font-weight: 500;
+  padding: 4px 12px; border-radius: 12px;
+  display: inline-block; margin-bottom: 14px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+.course-head h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700; color: #fff;
+  margin-bottom: 8px;
+}
+
+.course-head p { color: rgba(255,255,255,0.7); font-size: 13px; }
+
+.course-body { padding: 32px; }
+
+.features { list-style: none; margin-bottom: 28px; }
+
+.features li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--gray);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  transition: color 0.2s;
+}
+
+.features li:hover { color: var(--dark); }
+
+.features li .check {
+  width: 20px; height: 20px;
+  background: var(--light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--red); font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+.course-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.duration { font-size: 13px; color: var(--gray); }
+.duration strong { display: block; color: var(--dark); font-size: 16px; }
+
+/* BATCHES */
+.batches-sec { background: var(--dark); }
+.batches-sec .section-label { background: rgba(255,255,255,0.08); color: var(--gold); border-color: rgba(232,184,75,0.2); }
+.batches-sec .section-h { color: #fff; }
+.batches-sec .section-p { color: rgba(255,255,255,0.5); }
+
+.batches-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; margin-top: 60px; max-width: 720px;
+}
+
+.batch-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px; padding: 36px;
+  transition: all 0.4s ease;
+  position: relative; overflow: hidden;
+}
+
+.batch-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.batch-card:hover { background: rgba(188,0,45,0.12); border-color: rgba(188,0,45,0.3); transform: translateY(-4px); }
+.batch-card:hover::before { transform: scaleX(1); }
+
+.batch-icon { font-size: 40px; margin-bottom: 20px; }
+
+.batch-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; color: #fff; margin-bottom: 10px;
+}
+
+.batch-card p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.65; margin-bottom: 20px; }
+
+.days { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.day {
+  background: rgba(232,184,75,0.12);
+  color: var(--gold);
+  font-size: 11px; font-weight: 500;
+  padding: 5px 12px; border-radius: 10px;
+  border: 1px solid rgba(232,184,75,0.2);
+}
+
+.contact-box {
+  margin-top: 40px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(232,184,75,0.2);
+  border-radius: 20px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+}
+
+.contact-box p { color: rgba(255,255,255,0.6); font-size: 14px; }
+.contact-box strong { color: #fff; }
+
+.phone-btn {
+  background: var(--gold);
+  color: var(--red-dark);
+  padding: 12px 24px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 500; font-size: 16px;
+  transition: all 0.3s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.phone-btn:hover { background: var(--gold-light); transform: scale(1.03); }
+
+/* FAQ */
+.faq { background: var(--white); }
+
+.faq-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-top: 60px;
+}
+
+.faq-item {
+  border: 1.5px solid rgba(0,0,0,0.07);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.faq-item.open { border-color: var(--red); }
+
+.faq-q {
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  cursor: pointer;
+  font-size: 15px; font-weight: 500;
+  background: transparent;
+  border: none; width: 100%;
+  text-align: left; color: var(--dark);
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.2s;
+}
+
+.faq-item.open .faq-q { color: var(--red); }
+
+.faq-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  font-size: 16px; color: var(--red);
+}
+
+.faq-item.open .faq-icon { background: var(--red); color: #fff; transform: rotate(45deg); }
+
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  font-size: 14px; color: var(--gray); line-height: 1.7;
+  padding: 0 24px;
+  border-top: 1px solid transparent;
+}
+
+.faq-item.open .faq-a {
+  max-height: 200px;
+  padding: 16px 24px 20px;
+  border-top-color: rgba(0,0,0,0.05);
+}
+
+/* ENROLL */
+.enroll {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  position: relative; overflow: hidden;
+}
+
+.enroll-bg {
+  position: absolute; inset: 0; pointer-events: none;
+}
+
+.enroll-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.enroll-circle:nth-child(1) { width: 600px; height: 600px; top: -200px; right: -100px; }
+.enroll-circle:nth-child(2) { width: 400px; height: 400px; bottom: -100px; left: -50px; }
+.enroll-circle:nth-child(3) { width: 200px; height: 200px; top: 50%; right: 200px; }
+
+.enroll .section-label { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.15); }
+.enroll .section-h { color: #fff; }
+.enroll .section-h em { color: var(--gold); }
+.enroll .section-p { color: rgba(255,255,255,0.65); }
+
+.enroll-layout {
+  display: grid; grid-template-columns: 1fr 1.1fr;
+  gap: 80px; align-items: start;
+  margin-top: 60px; position: relative; z-index: 1;
+}
+
+.perks { list-style: none; }
+
+.perk {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 32px;
+  opacity: 0; transform: translateX(-20px);
+  transition: all 0.5s ease;
+}
+
+.perk.visible { opacity: 1; transform: translateX(0); }
+
+.perk-icon {
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.perk:hover .perk-icon { background: rgba(255,255,255,0.2); }
+
+.perk strong { display: block; color: #fff; font-size: 16px; margin-bottom: 4px; }
+.perk span { color: rgba(255,255,255,0.55); font-size: 14px; line-height: 1.5; }
+
+/* FORM */
+.form-card {
+  background: var(--white);
+  border-radius: 28px; padding: 44px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.form-top { margin-bottom: 32px; }
+
+.form-top h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--dark); margin-bottom: 8px;
+}
+
+.form-top p { font-size: 14px; color: var(--gray); }
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+  display: block;
+  font-size: 11px; font-weight: 500;
+  color: var(--gray);
+  margin-bottom: 7px;
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid rgba(0,0,0,0.09);
+  border-radius: 14px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  background: var(--cream);
+  transition: all 0.25s;
+  outline: none;
+  appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--red);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(188,0,45,0.08);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: rgba(0,0,0,0.25); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.progress-bar {
+  height: 4px; background: rgba(0,0,0,0.06);
+  border-radius: 4px; margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.submit-btn {
+  width: 100%;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 16px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.submit-btn:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: var(--shadow-red); }
+.submit-btn:active::before { width: 300px; height: 300px; }
+
+.form-note {
+  text-align: center;
+  font-size: 12px; color: var(--gray);
+  margin-top: 14px; line-height: 1.5;
+}
+
+.success-state {
+  display: none; text-align: center; padding: 20px 0;
+}
+
+.success-state .check-circle {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+.success-state h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; color: var(--dark); margin-bottom: 12px;
+}
+
+.success-state p { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 8px; }
+.success-state .highlight { color: var(--red); font-weight: 500; font-size: 18px; }
+
+/* FOOTER */
+footer {
+  background: var(--dark2);
+  padding: 72px 48px 40px;
+}
+
+.footer-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 60px; margin-bottom: 60px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.footer-brand .logo { font-size: 28px; display: block; margin-bottom: 16px; text-decoration: none; }
+
+.footer-brand p {
+  font-size: 14px; color: rgba(255,255,255,0.4);
+  line-height: 1.7; max-width: 280px; margin-bottom: 24px;
+}
+
+.footer-phone {
+  color: var(--gold) !important;
+  font-size: 22px; font-weight: 500;
+  text-decoration: none; display: block;
+  transition: color 0.2s;
+}
+
+.footer-phone:hover { color: var(--gold-light) !important; }
+
+.footer-col h4 {
+  color: #fff; font-size: 13px; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul a {
+  color: rgba(255,255,255,0.4);
+  text-decoration: none; font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-col ul a:hover { color: rgba(255,255,255,0.8); }
+
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: rgba(255,255,255,0.3);
+}
+
+.footer-jp {
+  font-family: serif; font-size: 16px;
+  color: rgba(255,255,255,0.2);
+}
+
+/* SCROLL TO TOP */
+.scroll-top {
+  position: fixed; bottom: 32px; right: 32px;
+  width: 48px; height: 48px;
+  background: var(--red);
+  color: #fff; border: none; border-radius: 50%;
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(16px);
+  transition: all 0.3s;
+  box-shadow: 0 4px 16px rgba(188,0,45,0.4);
+  z-index: 99;
+}
+
+.scroll-top.show { opacity: 1; transform: translateY(0); }
+.scroll-top:hover { background: var(--red-dark); transform: translateY(-4px); }
+
+/* ANIMATIONS */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { grid-template-columns: 1fr; padding: 100px 32px 60px; }
+  .hero-right { display: none; }
+  .courses-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .course-panel.active { grid-template-columns: 1fr; }
+  .enroll-layout { grid-template-columns: 1fr; gap: 48px; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  section { padding: 72px 24px; }
+  .hero { padding: 90px 24px 60px; }
+  .hero-stats { gap: 24px; }
+  .why-grid { grid-template-columns: 1fr; }
+  .batches-layout { grid-template-columns: 1fr; }
+  .contact-box { flex-direction: column; align-items: flex-start; }
+  .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .form-row { grid-template-columns: 1fr; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+  .form-card { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-jp">語</div>
+  <div class="loader-content">
+    <div class="loader-logo">Hana<span>School</span></div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Hana<span>School</span></a>
+  <ul class="nav-links">
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#batches">Batches</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#enroll" class="nav-cta">Free Demo →</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#why" onclick="toggleMenu()">Why Us</a>
+  <a href="#courses" onclick="toggleMenu()">Courses</a>
+  <a href="#batches" onclick="toggleMenu()">Batches</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="#enroll" onclick="toggleMenu()" style="color: var(--gold);">Free Demo →</a>
+</div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">🌸 &nbsp; New Batches Starting Soon!</div>
+    <h1>Speak Japanese.<br><em>Start Today.</em><br>From Zero.</h1>
+    <p>Learn Japanese from an experienced speaker — online, flexible, and beginner-friendly. Your first class is completely FREE. No payment, no commitment.</p>
+    <div class="hero-btns">
+      <a href="#enroll" class="btn-primary">🎌 &nbsp;Join Free Demo Class</a>
+      <a href="#courses" class="btn-secondary">View Courses →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num" data-count="10">0</span>
+        <div class="stat-label">Max Per Batch</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">N5 & N4</span>
+        <div class="stat-label">Levels Offered</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num" data-count="100">0</span>
+        <div class="stat-label">% Online</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="visual-tag">✨ Online Japanese Classes</div>
+      <div class="visual-title">Start from Zero!</div>
+      <div class="visual-sub">Everything you need to learn Japanese</div>
+      <div class="mini-cards">
+        <div class="mini-card">
+          <div class="mini-icon">🎓</div>
+          <div class="mini-text">
+            <strong>Complete Beginners Welcome</strong>
+            <span>No prior knowledge needed at all</span>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-icon">🌸</div>
+          <div class="mini-text">
+            <strong>Understand Anime!</strong>
+            <span>Watch without subtitles in 3 months</span>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-icon">💼</div>
+          <div class="mini-text">
+            <strong>Japan Job Ready</strong>
+            <span>JLPT certified — open new career doors</span>
+          </div>
+        </div>
+      </div>
+      <a href="#enroll" class="visual-cta">👉 &nbsp; Book Your FREE Demo Now!</a>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker">
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Beginner Friendly</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> 100% Online Classes</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Max 10 Students Per Batch</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Weekday & Weekend Batches</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> N5 & N4 JLPT Preparation</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> First Class FREE!</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Learn From Home</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Anime Lovers Welcome</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Beginner Friendly</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> 100% Online Classes</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Max 10 Students Per Batch</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Weekday & Weekend Batches</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> N5 & N4 JLPT Preparation</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> First Class FREE!</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Learn From Home</span>
+    <span class="ticker-item"><span class="ticker-dot">✦</span> Anime Lovers Welcome</span>
+  </div>
+</div>
+
+<!-- WHY -->
+<section class="why" id="why">
+  <div class="reveal">
+    <div class="section-label">✦ Why HanaSchool</div>
+    <h2 class="section-h">Learning Japanese has<br><em>never been easier</em></h2>
+    <p class="section-p">We make Japanese fun, practical and accessible — even if you have never seen a Japanese character before.</p>
+  </div>
+
+  <div class="why-grid reveal">
+    <div class="why-card">
+      <div class="why-num">01</div>
+      <div class="why-icon">🎯</div>
+      <h3>Small Batches</h3>
+      <p>Max 10 students per batch means personal attention for every single student. You are never just a number here.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">02</div>
+      <div class="why-icon">💬</div>
+      <h3>Conversational First</h3>
+      <p>We focus on speaking first. You will hold basic Japanese conversations from your very first month of learning.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">03</div>
+      <div class="why-icon">📱</div>
+      <h3>100% Online</h3>
+      <p>Learn from the comfort of your home. All you need is your phone or laptop and a stable internet connection.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">04</div>
+      <div class="why-icon">🌸</div>
+      <h3>Anime & Culture</h3>
+      <p>Love anime? We use anime references and Japanese culture to make every class fun, exciting and memorable.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">05</div>
+      <div class="why-icon">📜</div>
+      <h3>JLPT Preparation</h3>
+      <p>Our curriculum is built around JLPT N5 and N4 — internationally recognized Japanese language certificates.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">06</div>
+      <div class="why-icon">💼</div>
+      <h3>Career Ready</h3>
+      <p>Japanese speakers are in huge demand in IT, tourism and manufacturing. Open new global career doors with us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses" id="courses">
+  <div class="courses-header reveal">
+    <div>
+      <div class="section-label">✦ Our Courses</div>
+      <h2 class="section-h">Choose your <em>learning path</em></h2>
+      <p class="section-p">Two carefully designed courses for your level.</p>
+    </div>
+    <div class="course-tabs">
+      <button class="tab-btn active" onclick="switchTab('beginner', this)">Beginner N5</button>
+      <button class="tab-btn" onclick="switchTab('intermediate', this)">Intermediate N4</button>
+    </div>
+  </div>
+
+  <div class="course-panel active" id="beginner">
+    <div class="course-card">
+      <div class="course-head" data-jp="あ">
+        <div class="course-badge">JLPT N5 — Foundation</div>
+        <h3>Start From Zero</h3>
+        <p>Perfect for complete beginners</p>
+      </div>
+      <div class="course-body">
+        <ul class="features">
+          <li><span class="check">✓</span>Hiragana & Katakana alphabets (complete)</li>
+          <li><span class="check">✓</span>Basic Japanese vocabulary — 800+ words</li>
+          <li><span class="check">✓</span>Simple sentence construction</li>
+          <li><span class="check">✓</span>Numbers, greetings & daily phrases</li>
+          <li><span class="check">✓</span>Introduction to Kanji — 100 characters</li>
+          <li><span class="check">✓</span>JLPT N5 exam preparation</li>
+        </ul>
+        <div class="course-foot">
+          <div class="duration"><span>Duration</span><strong>3 Months</strong></div>
+          <a href="#enroll" class="btn-primary" style="padding: 12px 24px; font-size: 13px;">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+    <div class="course-card" style="background: linear-gradient(180deg, #fff 0%, #FFF5F5 100%);">
+      <div class="course-head" data-jp="か">
+        <div class="course-badge" style="background: rgba(255,255,255,0.2); color: #fff;">What you will achieve</div>
+        <h3>After N5 Course</h3>
+        <p>You will be able to...</p>
+      </div>
+      <div class="course-body">
+        <ul class="features">
+          <li><span class="check">✓</span>Read all Japanese Hiragana & Katakana</li>
+          <li><span class="check">✓</span>Introduce yourself in Japanese confidently</li>
+          <li><span class="check">✓</span>Understand basic anime dialogue</li>
+          <li><span class="check">✓</span>Hold simple conversations with Japanese people</li>
+          <li><span class="check">✓</span>Read basic Japanese signs and menus</li>
+          <li><span class="check">✓</span>Pass the internationally recognized N5 exam</li>
+        </ul>
+        <div class="course-foot">
+          <div class="duration"><span>Next Step</span><strong>JLPT N4</strong></div>
+          <a href="#enroll" class="btn-primary" style="padding: 12px 24px; font-size: 13px;">Free Demo →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="course-panel" id="intermediate">
+    <div class="course-card">
+      <div class="course-head" data-jp="語">
+        <div class="course-badge">JLPT N4 — Intermediate</div>
+        <h3>Level Up Your Japanese</h3>
+        <p>For students who completed N5</p>
+      </div>
+      <div class="course-body">
+        <ul class="features">
+          <li><span class="check">✓</span>Advanced grammar — 150+ patterns</li>
+          <li><span class="check">✓</span>Expanded vocabulary — 1500+ words</li>
+          <li><span class="check">✓</span>Reading comprehension skills</li>
+          <li><span class="check">✓</span>Listening and speaking practice</li>
+          <li><span class="check">✓</span>Kanji mastery — 300+ characters</li>
+          <li><span class="check">✓</span>JLPT N4 exam preparation</li>
+        </ul>
+        <div class="course-foot">
+          <div class="duration"><span>Duration</span><strong>3 Months</strong></div>
+          <a href="#enroll" class="btn-primary" style="padding: 12px 24px; font-size: 13px;">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+    <div class="course-card" style="background: linear-gradient(180deg, #fff 0%, #FFF5F5 100%);">
+      <div class="course-head" data-jp="日">
+        <div class="course-badge" style="background: rgba(255,255,255,0.2); color: #fff;">What you will achieve</div>
+        <h3>After N4 Course</h3>
+        <p>You will be able to...</p>
+      </div>
+      <div class="course-body">
+        <ul class="features">
+          <li><span class="check">✓</span>Watch anime without subtitles</li>
+          <li><span class="check">✓</span>Have full conversations in Japanese</li>
+          <li><span class="check">✓</span>Read Japanese newspapers & books</li>
+          <li><span class="check">✓</span>Apply for Japan job opportunities</li>
+          <li><span class="check">✓</span>Travel Japan independently with confidence</li>
+          <li><span class="check">✓</span>Pass the recognized N4 certification</li>
+        </ul>
+        <div class="course-foot">
+          <div class="duration"><span>Next Step</span><strong>JLPT N3</strong></div>
+          <a href="#enroll" class="btn-primary" style="padding: 12px 24px; font-size: 13px;">Free Demo →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BATCHES -->
+<section class="batches-sec" id="batches">
+  <div class="reveal">
+    <div class="section-label">✦ Batch Timings</div>
+    <h2 class="section-h">Choose a schedule that<br><em>works for you</em></h2>
+    <p class="section-p">Weekday or weekend — you pick what fits your life. All batches are 100% online.</p>
+  </div>
+
+  <div class="batches-layout reveal">
+    <div class="batch-card">
+      <div class="batch-icon">💻</div>
+      <h3>Weekday Batch</h3>
+      <p>Perfect for students and working professionals who prefer consistent weekday learning sessions.</p>
+      <div class="days">
+        <span class="day">Monday</span>
+        <span class="day">Tuesday</span>
+        <span class="day">Wednesday</span>
+        <span class="day">Thursday</span>
+        <span class="day">Friday</span>
+      </div>
+    </div>
+    <div class="batch-card">
+      <div class="batch-icon">🌸</div>
+      <h3>Weekend Batch</h3>
+      <p>Ideal for those who prefer relaxed learning on weekends without any weekday pressure at all.</p>
+      <div class="days">
+        <span class="day">Saturday</span>
+        <span class="day">Sunday</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-box reveal">
+    <p>Need a <strong>custom timing?</strong> We are flexible — just reach out and we will work something out!</p>
+    <a href="tel:7348941349" class="phone-btn">📞 &nbsp;7348941349</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="reveal">
+    <div class="section-label">✦ Common Questions</div>
+    <h2 class="section-h">Got questions?<br><em>We have answers.</em></h2>
+    <p class="section-p">Everything you need to know before joining HanaSchool.</p>
+  </div>
+
+  <div class="faq-grid reveal">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Do I need any prior Japanese knowledge?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Absolutely not! Our N5 course is designed for complete beginners. We start from the very basics — the alphabet, pronunciation, and simple words. If you can say "Konnichiwa" you already know Japanese!</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What do I need for online classes?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Just a smartphone or laptop with a working internet connection. We use Google Meet which is free. No special equipment or software needed — just show up and learn!</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How long is each class session?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Each class session is approximately 60 minutes. We keep classes focused, engaging and productive. No boring lectures — every minute is valuable learning time.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is the course fee?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Please WhatsApp us at 7348941349 for current pricing and special batch offers. The first demo class is completely FREE with no obligation. Come experience the class before deciding!</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can kids join the classes?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes! Japanese is a wonderful language for children to learn. We have age-appropriate teaching methods for younger learners. Contact us to discuss the best batch option for your child.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Will I get a certificate after the course?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Our course prepares you for the internationally recognized JLPT (Japanese Language Proficiency Test) certification. This is a globally accepted certificate that opens doors to jobs and opportunities in Japan and Japanese companies worldwide.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section class="enroll" id="enroll">
+  <div class="enroll-bg">
+    <div class="enroll-circle"></div>
+    <div class="enroll-circle"></div>
+    <div class="enroll-circle"></div>
+  </div>
+
+  <div class="reveal">
+    <div class="section-label">✦ Get Started Today</div>
+    <h2 class="section-h">Your first class is<br><em>completely FREE!</em></h2>
+    <p class="section-p">No payment. No commitment. Just fill in your details and we will WhatsApp you within 24 hours!</p>
+  </div>
+
+  <div class="enroll-layout">
+    <ul class="perks">
+      <li class="perk">
+        <div class="perk-icon">🎓</div>
+        <div>
+          <strong>Free Demo Class</strong>
+          <span>Experience our teaching style before committing to anything at all</span>
+        </div>
+      </li>
+      <li class="perk">
+        <div class="perk-icon">👥</div>
+        <div>
+          <strong>Small Batch Guarantee</strong>
+          <span>Max 10 students only — seats fill fast so enroll now!</span>
+        </div>
+      </li>
+      <li class="perk">
+        <div class="perk-icon">📱</div>
+        <div>
+          <strong>Learn From Anywhere</strong>
+          <span>All you need is your phone — no commute, no hassle</span>
+        </div>
+      </li>
+      <li class="perk">
+        <div class="perk-icon">⚡</div>
+        <div>
+          <strong>Quick Response</strong>
+          <span>We will WhatsApp you within 24 hours to confirm your demo timing</span>
+        </div>
+      </li>
+      <li class="perk">
+        <div class="perk-icon">🌸</div>
+        <div>
+          <strong>Fun & Engaging</strong>
+          <span>We use anime, games and culture to make every class enjoyable</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="form-card">
+      <div id="formState">
+        <div class="form-top">
+          <h3>Book Free Demo Class</h3>
+          <p>Takes less than 1 minute — we promise!</p>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" id="fname" placeholder="Your name" oninput="updateProgress()">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="lname" placeholder="Last name" oninput="updateProgress()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp Number *</label>
+          <input type="tel" id="phone" placeholder="Enter your WhatsApp number" oninput="updateProgress()">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com" oninput="updateProgress()">
+        </div>
+        <div class="form-group">
+          <label>Preferred Batch *</label>
+          <select id="batch" onchange="updateProgress()">
+            <option value="">Select a batch timing</option>
+            <option>Weekday Batch (Mon – Fri)</option>
+            <option>Weekend Batch (Sat & Sun)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Course Level *</label>
+          <select id="course" onchange="updateProgress()">
+            <option value="">Which course interests you?</option>
+            <option>JLPT N5 — Beginner (Start from Zero)</option>
+            <option>JLPT N4 — Intermediate</option>
+            <option>Not sure — Help me decide!</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Why do you want to learn Japanese?</label>
+          <textarea rows="3" id="reason" placeholder="e.g. I love anime / Want a Japan job / JLPT exam prep..." style="resize: none;" oninput="updateProgress()"></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitForm()">🎌 &nbsp;Book My Free Demo Class!</button>
+        <p class="form-note">🔒 Your details are safe. We only contact you about your class booking.</p>
+      </div>
+
+      <div class="success-state" id="successState">
+        <div class="check-circle">🎉</div>
+        <h4>You are all set!</h4>
+        <p>Thank you for enrolling! We have received your details and will WhatsApp you within 24 hours to confirm your FREE demo class timing.</p>
+        <br>
+        <p>Can't wait? Message us right now!</p>
+        <p class="highlight">📱 &nbsp;7348941349</p>
+        <br>
+        <a href="https://wa.me/917348941349?text=Hi! I just filled the enrollment form for a FREE Japanese demo class." class="btn-primary" style="display: inline-flex; margin-top: 8px;">💬 &nbsp;Open WhatsApp Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">Hana<span>School</span></a>
+      <p>Learn Japanese online from the comfort of your home. Beginner-friendly, small batches, flexible timings. Your Japanese journey starts here!</p>
+      <a href="tel:7348941349" class="footer-phone">📞 7348941349</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#why">Why HanaSchool</a></li>
+        <li><a href="#courses">Our Courses</a></li>
+        <li><a href="#batches">Batch Timings</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#enroll">Free Demo Class</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <ul>
+        <li><a href="#courses">JLPT N5 — Beginner</a></li>
+        <li><a href="#courses">JLPT N4 — Intermediate</a></li>
+        <li><a href="#batches">Weekday Batch</a></li>
+        <li><a href="#batches">Weekend Batch</a></li>
+        <li><a href="#enroll">Book Free Demo</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 HanaSchool. All rights reserved.</span>
+    <span class="footer-jp">ありがとうございます — Thank you!</span>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// LOADER
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+  }, 2000);
+});
+
+// CURSOR
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    cursorRing.style.left = e.clientX + 'px';
+    cursorRing.style.top = e.clientY + 'px';
+  }, 80);
+});
+
+// NAV SCROLL
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  const scrollTop = document.getElementById('scrollTop');
+  if (window.scrollY > 60) {
+    nav.classList.add('scrolled');
+    scrollTop.classList.add('show');
+  } else {
+    nav.classList.remove('scrolled');
+    scrollTop.classList.remove('show');
+  }
+});
+
+// MOBILE MENU
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const ham = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
+}
+
+// PARTICLES
+const chars = ['日', '本', '語', 'あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'];
+const container = document.getElementById('particles');
+for (let i = 0; i < 12; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.textContent = chars[Math.floor(Math.random() * chars.length)];
+  p.style.left = Math.random() * 100 + '%';
+  p.style.fontSize = (Math.random() * 40 + 20) + 'px';
+  p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+  p.style.animationDelay = (Math.random() * 10) + 's';
+  container.appendChild(p);
+}
+
+// REVEAL ON SCROLL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// PERKS ANIMATION
+const perks = document.querySelectorAll('.perk');
+const perkObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 120);
+    }
+  });
+}, { threshold: 0.1 });
+perks.forEach(el => perkObserver.observe(el));
+
+// COUNT UP
+function countUp(el, target, suffix='') {
+  let count = 0;
+  const step = Math.ceil(target / 40);
+  const timer = setInterval(() => {
+    count += step;
+    if (count >= target) { count = target; clearInterval(timer); }
+    el.textContent = count + suffix;
+  }, 40);
+}
+
+const countEls = document.querySelectorAll('[data-count]');
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.count === '100' ? '%' : '';
+      countUp(el, target, suffix);
+      countObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+countEls.forEach(el => countObserver.observe(el));
+
+// COURSE TABS
+function switchTab(id, btn) {
+  document.querySelectorAll('.course-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// FORM PROGRESS
+function updateProgress() {
+  const fields = ['fname', 'phone', 'batch', 'course'];
+  const filled = fields.filter(id => document.getElementById(id)?.value?.trim()).length;
+  const pct = (filled / fields.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// SUBMIT FORM
+function submitForm() {
+  const fname = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const batch = document.getElementById('batch').value;
+  const course = document.getElementById('course').value;
+
+  if (!fname) { alert('Please enter your name!'); return; }
+  if (!phone || phone.length < 10) { alert('Please enter a valid WhatsApp number!'); return; }
+  if (!batch) { alert('Please select a batch!'); return; }
+  if (!course) { alert('Please select a course!'); return; }
+
+  document.getElementById('progressFill').style.width = '100%';
+
+  setTimeout(() => {
+    document.getElementById('formState').style.display = 'none';
+    const success = document.getElementById('successState');
+    success.style.display = 'block';
+    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 400);
+}
+</script>
+</body>
+</html>
