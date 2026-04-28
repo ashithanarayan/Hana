@@ -1757,9 +1757,12 @@ function updateProgress() {
 // SUBMIT FORM
 function submitForm() {
   const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
   const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
   const batch = document.getElementById('batch').value;
   const course = document.getElementById('course').value;
+  const reason = document.getElementById('reason').value.trim();
 
   if (!fname) { alert('Please enter your name!'); return; }
   if (!phone || phone.length < 10) { alert('Please enter a valid WhatsApp number!'); return; }
@@ -1767,6 +1770,18 @@ function submitForm() {
   if (!course) { alert('Please select a course!'); return; }
 
   document.getElementById('progressFill').style.width = '100%';
+
+  const msg =
+    `🎌 *NEW DEMO CLASS BOOKING!*%0A%0A` +
+    `👤 *Name:* ${fname} ${lname}%0A` +
+    `📱 *WhatsApp:* ${phone}%0A` +
+    `📧 *Email:* ${email || 'Not provided'}%0A` +
+    `📅 *Batch:* ${batch}%0A` +
+    `📚 *Course:* ${course}%0A` +
+    `💬 *Reason:* ${reason || 'Not provided'}%0A%0A` +
+    `✅ Please confirm their demo class timing!`;
+
+  window.open(`https://wa.me/917348941349?text=${msg}`, '_blank');
 
   setTimeout(() => {
     document.getElementById('formState').style.display = 'none';
